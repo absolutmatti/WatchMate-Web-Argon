@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#060A18" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>WatchMate TV — Mobile Companion</title>
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./styles.css" />
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Hintergrund-Glow-Effekte passend zum TV-Design -->
+  <div class="ambient-glow glow-cyan"></div>
+  <div class="ambient-glow glow-red"></div>
+
+  <!-- App Container -->
+  <div class="app-shell">
+
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+            <polyline points="17 2 12 7 7 2"></polyline>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">WatchMate <span class="badge-tv">TV</span></h1>
+          <div class="sync-status" id="syncStatusIndicator">
+            <span class="status-dot" id="syncStatusDot"></span>
+            <span id="syncStatusText">Lokaler Modus</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Region Badge -->
+        <button id="regionToggleBtn" class="icon-chip" title="Streaming-Region wechseln">
+          <span id="currentRegionFlag">🇩🇪</span>
+          <span id="currentRegionCode">DE</span>
+        </button>
+
+        <!-- Auth / Profil Button -->
+        <button id="authBtn" class="icon-btn" title="Google-Konto für TV-Sync">
+          <img id="userAvatar" class="user-avatar hidden" alt="Profilbild" />
+          <svg id="userIconDefault" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </button>
+
+        <!-- Einstellungen Button -->
+        <button id="settingsBtn" class="icon-btn" title="API & Abos konfigurieren">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Suchleiste (Sticky) -->
+    <section class="search-section">
+      <div class="search-box">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="Film oder Serie für TV suchen..."
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+        />
+        <button id="clearSearchBtn" class="clear-btn hidden" aria-label="Suche löschen">✕</button>
+      </div>
+
+      <!-- Hauptnavigation: Entdecken / Meine TV-Watchlist -->
+      <div class="nav-tabs" role="tablist">
+        <button class="nav-tab active" data-tab="search" id="tabSearchBtn">
+          <span>🔍 Suche & Trends</span>
+        </button>
+        <button class="nav-tab" data-tab="watchlist" id="tabWatchlistBtn">
+          <span>📺 TV-Watchlist</span>
+          <span class="tab-counter" id="watchlistCounter">0</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TAB 1: SUCHE & ENTDECKEN -->
+    <main id="searchView" class="view-container">
+      <div class="section-header">
+        <h2 id="searchSectionTitle">Beliebte Empfehlungen</h2>
+        <span id="searchMetaInfo" class="meta-subtitle">Sofort zum TV senden</span>
+      </div>
+
+      <!-- Lade-Spinner -->
+      <div id="searchLoading" class="loading-state hidden">
+        <div class="spinner"></div>
+        <p>Durchsuche TMDb & Streaming-Anbieter...</p>
+      </div>
+
+      <!-- Ergebnisliste -->
+      <div id="searchResultsGrid" class="media-list"></div>
+    </main>
+
+    <!-- TAB 2: MEINE TV-WATCHLIST (Echtzeit-Sync) -->
+    <main id="watchlistView" class="view-container hidden">
+      <div class="filter-bar">
+        <button class="filter-pill active" data-filter="ALL">Alle</button>
+        <button class="filter-pill" data-filter="PLAN_TO_WATCH">Geplant</button>
+        <button class="filter-pill" data-filter="WATCHING">Schaue ich</button>
+        <button class="filter-pill" data-filter="movie">Filme</button>
+        <button class="filter-pill" data-filter="tv">Serien</button>
+      </div>
+
+      <div id="watchlistEmptyState" class="empty-state hidden">
+        <div class="empty-icon">🍿</div>
+        <h3>Deine TV-Watchlist ist noch leer</h3>
+        <p>Suche oben nach einem Film oder einer Serie und tippe auf „Auf die Watchlist“.</p>
+      </div>
+
+      <div id="watchlistGrid" class="media-list"></div>
+    </main>
+
+  </div>
+
+  <!-- Toast-Benachrichtigung (Unten) -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- MODAL: EINSTELLUNGEN (Firebase Auth, TMDb API, Eigene Streaming-Abos) -->
+  <div id="settingsModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2>⚙️ Kopplung & Einstellungen</h2>
+        <button id="closeSettingsBtn" class="icon-btn">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 1. Google Cloud Sync Status -->
+        <div class="settings-card">
+          <div class="card-title-row">
+            <h3>☁️ Google TV Cloud-Sync</h3>
+            <span id="authBadge" class="status-pill offline">Nicht angemeldet</span>
+          </div>
+          <p class="settings-help">
+            Melde dich mit demselben Google-Konto an wie auf deinem Android TV.
+          </p>
+          <div id="authUserInfo" class="auth-user-box hidden"></div>
+          <div class="btn-row">
+            <button id="googleSignInBtn" class="btn btn-primary full-width">
+              Mit Google anmelden
+            </button>
+            <button id="googleSignOutBtn" class="btn btn-outline full-width hidden">
+              Abmelden
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Eigene Streaming-Abonnements -->
+        <div class="settings-card">
+          <h3>🍿 Meine Streaming-Abos</h3>
+          <p class="settings-help">
+            Aktivierte Anbieter werden bei den Suchergebnissen farblich hervorgehoben.
+          </p>
+          <div id="subscriptionsGrid" class="subs-grid"></div>
+        </div>
+
+        <!-- 3. TMDb API-Konfiguration -->
+        <div class="settings-card">
+          <h3>🎬 TMDb API-Schlüssel</h3>
+          <p class="settings-help">
+            Für weltweite Echtzeit-Suche, FSK-Freigaben und Streaming-Verfügbarkeit in DE/AT/CH.
+          </p>
+          <label class="input-label" for="tmdbApiKeyInput">TMDb API Key (v3) oder Read Access Token (v4)</label>
+          <input
+            type="password"
+            id="tmdbApiKeyInput"
+            class="text-input"
+            placeholder="z.B. 8a7b9c... oder eyJhbGci..."
+          />
+        </div>
+
+        <!-- 4. Firebase Projekt-Konfiguration -->
+        <div class="settings-card">
+          <h3>🔥 Firebase Projekt-Konfiguration</h3>
+          <p class="settings-help">
+            Füge dein Firebase Web-Config JSON-Objekt ein (oder hinterlege es direkt in <code>app.js</code>).
+          </p>
+          <textarea
+            id="firebaseConfigInput"
+            class="text-input code-textarea"
+            rows="5"
+            placeholder='{"apiKey": "...", "authDomain": "...", "projectId": "..."}'
+          ></textarea>
+        </div>
+
+        <button id="saveSettingsBtn" class="btn btn-primary full-width">
+          Einstellungen speichern & neu verbinden
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Haupt-Skript -->
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

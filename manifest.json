@@ -1,0 +1,18 @@
+{
+  "name": "WatchMate TV Companion",
+  "short_name": "WatchMate",
+  "description": "Filme & Serien von unterwegs direkt auf deinen Android TV senden.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#060A18",
+  "theme_color": "#060A18",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/4221/4221419.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Zero-Trust: Jeder Nutzer darf ausschließlich seine eigene Watchlist lesen & schreiben
+    match /users/{userId}/watchlist/{itemId} {
+      allow read, delete: if request.auth != null && request.auth.uid == userId;
+
+      allow create, update: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasAll(['id', 'mediaType', 'title', 'status'])
+        && request.resource.data.id is int
+        && request.resource.data.mediaType in ['movie', 'tv']
+        && request.resource.data.status in ['PLAN_TO_WATCH', 'WATCHING', 'COMPLETED']
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0;
+    }
+  }
+}
